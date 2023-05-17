@@ -1,0 +1,36 @@
+hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -file mapper.py -mapper mapper1.py -file reducer.py -reducer reducer1.py -input /input -output /output
+
+mapred streaming -files mapper1.py,reducer1.py -mapper 'python3 mapper1.py' -reducer 'python3 reducer1.py' -input /input -output /output
+
+sudo docker exec -it namenode /bin/bash
+apt-get update && apt-get install -y python3
+sudo docker exec -it nodemanager /bin/bash
+apt-get update && apt-get install -y python3
+sudo docker exec -it resourcemanager /bin/bash
+apt-get update && apt-get install -y python3
+sudo docker exec -it historyserver /bin/bash
+apt-get update && apt-get install -y python3
+sudo docker exec -it datanode /bin/bash
+apt-get update && apt-get install -y python3
+
+apt-get update && apt-get install -y python3
+
+tar -czvf 2021202011.tar.gz *
+
+sudo docker cp '/home/sudipta/Desktop/DistriSys/A2/q2' namenode:/
+sudo docker cp '/home/sudipta/Desktop/DistriSys/A2/q3' namenode:/
+
+sudo docker exec -it namenode /bin/bash
+
+hdfs dfs -rm -r /output
+hdfs dfs -rm -r /input
+
+hdfs dfs -mkdir -p /user/root/input
+
+hdfs dfs -put input.txt /input
+
+hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -file mapper.py -mapper "python3 mapper.py" -file reducer.py -reducer "python3 reducer.py" -input /input/input.txt -output /output3
+
+hdfs dfs -cat /output3/part-00000
+
+python3 runner_script.py /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar input.txt /input/ /output3 "./"
